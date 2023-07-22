@@ -14,6 +14,7 @@ getData() async {
 getJSONData('Uri 주소', 'result')
 */
 
+// 2023-07-23 OKrie, getJSONData
 getJSONData(String uriPath, {String? responseHeader}) async {
   List data = [];
   var url = Uri.parse(uriPath);

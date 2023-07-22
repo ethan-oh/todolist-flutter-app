@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:team_four_todo_list_app/functions/get_json.dart';
+import 'package:team_four_todo_list_app/functions/label_color.dart';
 
 class MeMoPage extends StatefulWidget {
   const MeMoPage({super.key});
@@ -35,6 +36,7 @@ class _MeMoPageState extends State<MeMoPage> {
           itemCount: memoData.length,
           itemBuilder: (context, index) {
             return Card(
+              color: Color(LabelColors.colorLabels['pastelYellow1']),
               child: Column(
                 children: [
                   Text(memoData[index]['userId'].toString()),
