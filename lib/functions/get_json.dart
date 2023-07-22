@@ -6,7 +6,8 @@ import 'package:http/http.dart' as http;
 getJSONData 사용법
 사용할 클래스에서 함수를 하나 선언 ex) getData()
 getData() async {
-  list.addAll(getJSONData('Uri 주소'))
+  list.addAll(getJSONData('Uri 주소'));
+  setState ..
 }
 
 만약 header에 result 나 results 가 있을 경우에는 아래와 같이 사용

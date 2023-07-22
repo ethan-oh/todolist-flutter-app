@@ -1,3 +1,11 @@
+
+/*
+  해당 클래스는 {String, Int} 형식으로 Color()에 넣으면 해당 색상이 노출된다.
+  예시 사용 방법
+  color: Color(LabelColors.colorLabels['pastelPink1']),
+*/
+
+// 2023-07-23 OKrie, Label Color
 class LabelColors{
   static Map<String, dynamic> colorLabels = {
     'pastelRed1' : 0xffffdddd,
