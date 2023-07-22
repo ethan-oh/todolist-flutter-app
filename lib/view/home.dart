@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:team_four_todo_list_app/view/calender.dart';
+import 'package:team_four_todo_list_app/view/memo_page.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -10,17 +12,17 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   // Property
-  late TabController controller;
+  late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
-    controller = TabController(length: 5, vsync: this);
+    _tabController = TabController(length: 5, vsync: this);
   }
 
   @override
   void dispose() {
-    controller.dispose();
+    _tabController.dispose();
     super.dispose();
   }
 
@@ -60,9 +62,19 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
           ],
         ),
       ),
+      body: TabBarView(
+        controller: _tabController,
+        children: const [
+          Calender(),   // 일정 Page 
+          MeMoPage(),   // 메모 Page
+          Calender(),   // 작성 Page
+          Calender(),   // 검색 Page
+          Calender(),   // 설정 Page
+        ],
+      ),
       bottomNavigationBar: TabBar(
         labelColor: Colors.green,
-        controller: controller,
+        controller: _tabController,
         tabs: const [
           Tab(
             icon: Icon(
