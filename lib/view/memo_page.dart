@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:team_four_todo_list_app/functions/get_json.dart';
 import 'package:team_four_todo_list_app/functions/label_color.dart';
+import 'package:team_four_todo_list_app/view/memo_detail_page.dart';
 
 class MeMoPage extends StatefulWidget {
   const MeMoPage({super.key});
@@ -18,7 +19,7 @@ class _MeMoPageState extends State<MeMoPage> {
   void initState() {
     super.initState();
     memoData = [];
-    //getData();
+    getData();
   }
 
   @override
@@ -49,15 +50,23 @@ class _MeMoPageState extends State<MeMoPage> {
                 ),
                 child: GestureDetector(
                   onTap: () {
-                    //
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return MemoDetailPage(data: memoData,
+                          memoColor: LabelColors.colorLabels.values.elementAt(
+                            index >= LabelColors.colorLabels.length ? index - LabelColors.colorLabels.length : index));
+                        },
+                      ),
+                    );
                   },
                   child: Card(
                     color: Color(
                       LabelColors.colorLabels.values.elementAt(
-                        Random().nextInt(
-                          LabelColors.colorLabels.length
-                        )
-                      )
+                        index >= LabelColors.colorLabels.length 
+                        ? index - LabelColors.colorLabels.length 
+                        : index)
                     ),  //LabelColors.colorLabels['pastelYellow1']),
                     child: Column(
                       children: [
