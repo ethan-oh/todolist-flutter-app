@@ -70,7 +70,7 @@ class _CalenderState extends State<Calender> {
 
   // ---- Functions ----
   getTodoList() async {
-    var url = Uri.parse('http://localhost:8080/Flutter/team4_select.jsp');
+    var url = Uri.parse('http://localhost:8080/Flutter/team4_todolist_select.jsp');
     var response = await http.get(url);
     print(response.body);
     todoList.clear(); // 화면에 데이터 정리. 안하면 쌓일 수 있음.
