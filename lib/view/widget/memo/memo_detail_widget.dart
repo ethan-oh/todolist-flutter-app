@@ -8,10 +8,8 @@ class MemoDetailWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MemoProvider memoProvider = MemoProvider();
-    memoProvider = Provider.of<MemoProvider>(context, listen: false);
-    TextEditingController memoController = TextEditingController(text: memoProvider.content);
-    // late List memoData;
+    final _memoProvider = Provider.of<MemoProvider>(context, listen: true);
+    TextEditingController memoController = TextEditingController(text: _memoProvider.memoData.contentText);
 
     return Center(
       child: Column(
@@ -20,9 +18,11 @@ class MemoDetailWidget extends StatelessWidget {
             padding: const EdgeInsets.all(15),
             child: Consumer<MemoProvider>(
               builder: (context, value, child) {
+                print('text = ${_memoProvider.memoData.contentText}');
+                print('text = ${value.memoData.contentText}');
                 return Container(
                   height: 450,
-                  color: Color(LabelColors.colorLabels[value.color]),
+                  color: Colors.amber,//Color(LabelColors.colorLabels[value.color]),
                   child: Padding(
                     padding: const EdgeInsets.all(10),
                     child: SizedBox(

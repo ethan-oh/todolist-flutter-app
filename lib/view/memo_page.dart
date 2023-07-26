@@ -12,7 +12,7 @@ class MeMoPage extends StatelessWidget {
       appBar: AppBar(),
       body: ChangeNotifierProvider(
         create: (context) => MemoProvider(),
-        child: const MemoMainWidget(),
+        child: const MemoMainWidget()
       ),
     );
   }

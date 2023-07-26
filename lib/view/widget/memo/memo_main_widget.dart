@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
+import 'package:provider/provider.dart';
 import 'package:team_four_todo_list_app/functions/label_color.dart';
 import 'package:team_four_todo_list_app/model/memo/memo.dart';
 import 'package:team_four_todo_list_app/view/memo_detail_page.dart';
@@ -11,6 +12,8 @@ class MemoMainWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final memoProvider = Provider.of<MemoProvider>(context, listen: true);
+
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance.collection('memo').orderBy('insertdate', descending: true).snapshots(),
       builder: (context, snapshot) {
@@ -27,13 +30,13 @@ class MemoMainWidget extends StatelessWidget {
         }
         final documnets = snapshot.data!.docs;
         return ListView(
-          children: documnets.map((e) => _buildItemWidget(e)).toList(),
+          children: documnets.map((e) => _buildItemWidget(e, memoProvider)).toList(),
         );
       }
     );
   }
 
-  Widget _buildItemWidget(DocumentSnapshot doc){
+  Widget _buildItemWidget(DocumentSnapshot doc, MemoProvider memoProvider){
     final memoData = Memo(
       contentText: doc['content'],
       memoLabelColor: doc['labelcolor'],
@@ -53,7 +56,7 @@ class MemoMainWidget extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         child: GestureDetector(
           onTap: () {
-            MemoProvider().addList(memoData.contentText, memoData.memoLabelColor);
+            memoProvider.addList(memoData);
             Get.to(const MemoDetailPage());
           },
           child: Card(
