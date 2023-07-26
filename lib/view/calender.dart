@@ -1,8 +1,12 @@
 import 'dart:convert';
+import 'dart:io';
+import 'dart:math';
 
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:team_four_todo_list_app/functions/label_color.dart';
 
 class Calender extends StatefulWidget {
   const Calender({super.key});
@@ -82,31 +86,50 @@ class _CalenderState extends State<Calender> {
                     ),
                     SizedBox(
                       height: 300,
-                      child: ListView.builder(
+                      child: GridView.builder(
                         itemCount: selectedDateEvents.length,
+                        scrollDirection: Axis.horizontal,
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 5,
+                          crossAxisSpacing: 5,
+                        ),
                         itemBuilder: (context, index) {
-                          return Card(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Text(
-                                      selectedDateEvents[index]["t_title"],
-                                      style: const TextStyle(
-                                        fontSize: 20
-                                      ),
-                                    ),
-                                    Text(
-                                      selectedDateEvents[index]["t_content"],
-                                      style: const TextStyle(
-                                        fontSize: 20
-                                      ),
-                                    )
-                                  ],
-                                )
+                          return GestureDetector(
+                            onTap: () => Get.defaultDialog(
+                              title: "${selectedDateEvents[index]["t_title"]}",
+                              middleText: "${selectedDateEvents[index]["t_content"]}",
+                              backgroundColor: Colors.white,
+                              actions: [
+                                ElevatedButton(
+                                  onPressed: () => Get.back(),
+                                  child: const Text('OK'),
+                                ),
                               ],
+                            ),
+                            child: Card(
+                              color: Colors.white,
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        selectedDateEvents[index]["t_title"],
+                                        style: const TextStyle(
+                                          fontSize: 25
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  // Text(
+                                  //   selectedDateEvents[index]["t_content"],
+                                  //   style: const TextStyle(
+                                  //     fontSize: 15
+                                  //   ),
+                                  // )
+                                ],
+                              ),
                             ),
                           );
                         },
@@ -124,12 +147,12 @@ class _CalenderState extends State<Calender> {
     var url =
         Uri.parse('http://localhost:8080/Flutter/team4_todolist_select.jsp');
     var response = await http.get(url);
-    print(response.body);
+    // print(response.body);
     todoList.clear(); // 화면에 데이터 정리. 안하면 쌓일 수 있음.
     var dataConvertedJSON =
         json.decode(utf8.decode(response.bodyBytes)); // 한국 사람은 이거 써야 됨.
     List result = dataConvertedJSON['results'];
-    print(result);
+    // print(result);
     todoList.addAll(result);
     setState(() {
       //

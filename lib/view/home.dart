@@ -68,8 +68,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         controller: _tabController,
         children: const [
           Calender(),   // 일정 Page 
-          Calender(),   // 일정 Page 
-          // MeMoPage(),   // 메모 Page
+          MeMoPage(),   // 메모 Page
           WritePage(),   // 작성 Page
           SearchPage(),   // 검색 Page
           Calender(),   // 설정 Page
