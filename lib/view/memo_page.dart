@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:team_four_todo_list_app/functions/get_json.dart';
 import 'package:team_four_todo_list_app/functions/label_color.dart';
@@ -14,12 +12,14 @@ class MeMoPage extends StatefulWidget {
 
 class _MeMoPageState extends State<MeMoPage> {
   late List memoData;
+  late int count;
 
   @override
   void initState() {
     super.initState();
     memoData = [];
     getData();
+    count = 0;
   }
 
   @override
@@ -56,7 +56,7 @@ class _MeMoPageState extends State<MeMoPage> {
                         builder: (context) {
                           return MemoDetailPage(data: memoData,
                           memoColor: LabelColors.colorLabels.values.elementAt(
-                            index >= LabelColors.colorLabels.length ? index - LabelColors.colorLabels.length : index));
+                            count >= LabelColors.colorLabels.length - 1 ? count = 0 : count++));
                         },
                       ),
                     );
@@ -64,9 +64,9 @@ class _MeMoPageState extends State<MeMoPage> {
                   child: Card(
                     color: Color(
                       LabelColors.colorLabels.values.elementAt(
-                        index >= LabelColors.colorLabels.length 
-                        ? index - LabelColors.colorLabels.length 
-                        : index)
+                        count >= LabelColors.colorLabels.length -1
+                        ? count = 0
+                        : count++)
                     ),  //LabelColors.colorLabels['pastelYellow1']),
                     child: Column(
                       children: [

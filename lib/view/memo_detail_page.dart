@@ -18,36 +18,39 @@ class _MemoDetailPageState extends State<MemoDetailPage> {
     super.initState();
     memoData = [];
     memoData.addAll(widget.data);
-    memoController = TextEditingController(text: memoData[0]['content']);
+    memoController = TextEditingController(text: memoData[0]['title']);
   }
   
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Center(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(15),
-                child: Container(
-                  height: 450,
-                  color: Color(widget.memoColor),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
+      body: Center(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(15),
+              child: Container(
+                height: 450,
+                color: Color(widget.memoColor),
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: SizedBox(
+                    width: 350,
                     child: TextField(
+                      readOnly: true,
                       controller: memoController,
-                      decoration: InputDecoration(
-                        //
+                      maxLines: null,
+                      minLines: 12,
+                      decoration: const InputDecoration(
+                        labelText: 'Memo',
                       ),
                     ),
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
