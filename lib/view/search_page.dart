@@ -1,5 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:team_four_todo_list_app/functions/get_json.dart';
+import 'package:team_four_todo_list_app/model/search_fb.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -11,6 +12,7 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   late TextEditingController searchController;
   late List memoData;
+  late List searchData;
   late int conut;
 
   @override
@@ -18,7 +20,7 @@ class _SearchPageState extends State<SearchPage> {
     super.initState();
     searchController = TextEditingController();
     memoData = [];
-    getData();
+    searchData = [];
     conut = 0;
   }
 
@@ -26,43 +28,74 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Search'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(30.0),
-        child: Center(
-          child: Column(
-            children: [
-              TextField(
-                controller: searchController,
-                decoration: InputDecoration(
+        toolbarHeight: 100,
+        title: Column(
+          children: [
+            const Text('Search'),
+            TextField(
+              controller: searchController,
+              decoration: InputDecoration(
                   suffixIcon: GestureDetector(
-                    onTap: () {
-                      // 검색 쿼리
-                      print(memoData.length);
-                    },
-                    child: const Icon(Icons.search),
-                  )
+                onTap: () {
+                  if(searchController.text.trim().isEmpty){
+                    
+                  }
+                  setState(() {
+                    
+                  });
+                },
+                child: const Icon(Icons.search),
                 ),
-                keyboardType: TextInputType.text,
               ),
-            ],
-          ),
+              keyboardType: TextInputType.text,
+            ),
+          ],
         ),
+        
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+                .collection('memo')
+                .where('content', isGreaterThanOrEqualTo: searchController.text)
+                .where('content', isLessThanOrEqualTo: '${searchController.text}\uf8ff')    
+                .snapshots(),
+        builder: (context, snapshot) {
+          if(!snapshot.hasData){
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          final documents = snapshot.data!.docs;          // docs <- document
+          return searchController.text.trim().isNotEmpty ? 
+          ListView(
+            children: documents.map((e) => _buildItemWidget(e)).toList(),
+          ) :
+          const Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                  Text(
+                    '데이터 없다.'
+                  )
+              ],
+            ),
+          );
+        },
       ),
     );
   }
 
-
-  // -- function --
-    getData() async {
-    memoData.addAll(await getJSONData('https://jsonplaceholder.typicode.com/posts'));   // Test 주소
-    print(memoData.length);
-    setState(() {
-      
-    });
+  // functions
+  Widget _buildItemWidget(DocumentSnapshot doc){
+    var memoList = SearchFB(insertDate: doc['insertdate'], labelColor: doc['labelcolor'], content: doc['content']);
+    return Card(
+      child: ListTile(
+        title: Text(
+          memoList.content
+        ),
+      ),
+    );
   }
-
 
 
 } // end
