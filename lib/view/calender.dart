@@ -78,7 +78,6 @@ class _CalenderState extends State<Calender> {
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        fontFamily: String.fromEnvironment("AppleGothic"),
                       ),
                     ),
                     SizedBox(
@@ -90,7 +89,23 @@ class _CalenderState extends State<Calender> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                Text(selectedDateEvents[index]["t_title"])
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Text(
+                                      selectedDateEvents[index]["t_title"],
+                                      style: const TextStyle(
+                                        fontSize: 20
+                                      ),
+                                    ),
+                                    Text(
+                                      selectedDateEvents[index]["t_content"],
+                                      style: const TextStyle(
+                                        fontSize: 20
+                                      ),
+                                    )
+                                  ],
+                                )
                               ],
                             ),
                           );
