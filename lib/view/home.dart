@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:team_four_todo_list_app/view/calender.dart';
 import 'package:team_four_todo_list_app/view/memo_page.dart';
+import 'package:team_four_todo_list_app/view/search_page.dart';
+import 'package:team_four_todo_list_app/view/write_page.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -67,8 +69,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         children: const [
           Calender(),   // 일정 Page 
           MeMoPage(),   // 메모 Page
-          Calender(),   // 작성 Page
-          Calender(),   // 검색 Page
+          WritePage(),   // 작성 Page
+          SearchPage(),   // 검색 Page
           Calender(),   // 설정 Page
         ],
       ),
