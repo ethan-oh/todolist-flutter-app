@@ -1,15 +1,13 @@
 class Memo{
-  int? seq;
-  String titleText;
   String contentText;
-  int? memoLabelColor;
+  String memoLabelColor;
+  String? insertdate;
 
   Memo(
     {
-      this.seq,
-      required this.titleText,
       required this.contentText,
-      this.memoLabelColor,
+      required this.memoLabelColor,
+      this.insertdate,
     }
   );
 }
