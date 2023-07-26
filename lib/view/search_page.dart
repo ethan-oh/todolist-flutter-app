@@ -37,9 +37,12 @@ class _SearchPageState extends State<SearchPage> {
               decoration: InputDecoration(
                   suffixIcon: GestureDetector(
                 onTap: () {
-                  if(searchController.text.trim().isNotEmpty){
+                  if(searchController.text.trim().isEmpty){
                     
                   }
+                  setState(() {
+                    
+                  });
                 },
                 child: const Icon(Icons.search),
                 ),
@@ -53,8 +56,8 @@ class _SearchPageState extends State<SearchPage> {
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
                 .collection('memo')
-                .where('content', arrayContains: '메모 테스트')
-                .orderBy('insertdate',descending: false)
+                .where('content', isGreaterThanOrEqualTo: searchController.text)
+                .where('content', isLessThanOrEqualTo: '${searchController.text}\uf8ff')    
                 .snapshots(),
         builder: (context, snapshot) {
           if(!snapshot.hasData){
@@ -63,8 +66,19 @@ class _SearchPageState extends State<SearchPage> {
             );
           }
           final documents = snapshot.data!.docs;          // docs <- document
-          return ListView(
+          return searchController.text.trim().isNotEmpty ? 
+          ListView(
             children: documents.map((e) => _buildItemWidget(e)).toList(),
+          ) :
+          const Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                  Text(
+                    '데이터 없다.'
+                  )
+              ],
+            ),
           );
         },
       ),
@@ -73,11 +87,11 @@ class _SearchPageState extends State<SearchPage> {
 
   // functions
   Widget _buildItemWidget(DocumentSnapshot doc){
-    var memoList = SearchFB(insertDate: doc['insertdate'], labelColor: doc['labelcolor'], title: doc['content']);
+    var memoList = SearchFB(insertDate: doc['insertdate'], labelColor: doc['labelcolor'], content: doc['content']);
     return Card(
       child: ListTile(
         title: Text(
-          memoList.title
+          memoList.content
         ),
       ),
     );
