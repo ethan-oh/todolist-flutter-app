@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:team_four_todo_list_app/model/memo/memo.dart';
 
 class MemoProvider extends ChangeNotifier{
-  List _memoData = [];
-  String _labelColor = '';
+  String _contents = '';
+  String _color = '';
 
-  List get memoData => _memoData;
-  String get labelColor => _labelColor;
+  String get content => _contents;
+  String get color => _color;
 
-  addList(Memo data, String color){
-    _memoData.add(data);
-    _labelColor = color;
+  addList(String mcontent, String mcolor){
+    _contents = mcontent;
+    _color = mcolor;
     notifyListeners();
   }
 }
