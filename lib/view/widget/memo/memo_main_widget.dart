@@ -30,17 +30,18 @@ class MemoMainWidget extends StatelessWidget {
         }
         final documnets = snapshot.data!.docs;
         return ListView(
-          children: documnets.map((e) => _buildItemWidget(e, memoProvider)).toList(),
+          children: documnets.map((e) => _buildItemWidget(e, memoProvider, context)).toList(),
         );
       }
     );
   }
   
 
-  Widget _buildItemWidget(DocumentSnapshot doc, MemoProvider memoProvider){
+  Widget _buildItemWidget(DocumentSnapshot doc, MemoProvider memoProvider, BuildContext context){
     final memoData = Memo(
       contentText: doc['content'],
       memoLabelColor: doc['labelcolor'],
+      insertdate: doc['insertdate'].toDate().toString().substring(0, 16).replaceAll(":", "시 ")
     );
     return Dismissible(
       direction: DismissDirection.endToStart,
@@ -57,7 +58,9 @@ class MemoMainWidget extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         child: GestureDetector(
           onTap: () {
+            print(memoData.insertdate);
             memoProvider.addList(memoData);
+            memoProvider.setDocId(doc.id);
             Get.to(const MemoDetailPage());
           },
           child: Card(
@@ -69,7 +72,7 @@ class MemoMainWidget extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: SizedBox(
-                        width: 350,
+                        width: MediaQuery.of(context).size.width * 0.93,
                         child: Text(
                           memoData.contentText,
                           style: const TextStyle(

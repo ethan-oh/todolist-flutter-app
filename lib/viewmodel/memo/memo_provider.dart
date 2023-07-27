@@ -4,7 +4,8 @@ import 'package:team_four_todo_list_app/model/memo/memo.dart';
 class MemoProvider extends ChangeNotifier{
   // String _contents = '';
   // String _color = '';
-  Memo _memoData = Memo(contentText: '', memoLabelColor: '');
+  Memo _memoData = Memo(contentText: '', memoLabelColor: '', insertdate: '');
+  String _id = '';
 
   // String get content => _contents;
   // String get color => _color;
@@ -16,9 +17,15 @@ class MemoProvider extends ChangeNotifier{
   // }
 
   Memo get memoData => _memoData;
+  String get id => _id;
 
   addList(Memo memo){
     _memoData = memo;
+    notifyListeners();
+  }
+
+  setDocId(String docId){
+    _id = docId;
     notifyListeners();
   }
 }
