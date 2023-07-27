@@ -1,6 +1,6 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:team_four_todo_list_app/model/search_sql.dart';
+import 'package:team_four_todo_list_app/model/search/search_sql.dart';
 
 class DatabaseHandler{
 
@@ -10,7 +10,7 @@ class DatabaseHandler{
      join(path, 'searchlist.db'),      // path로 경로를 찾아서 들어가서 불러온다.
      onCreate: (db, version) async{ // 데이터베이스가 없으면 실행
        await db.execute(
-        'create table search(id integer primary key autoincrement, content text)'
+        'create table search(seq integer primary key autoincrement, content text)'
        );
      },
      version: 1,
@@ -35,6 +35,14 @@ class DatabaseHandler{
     );
     
     return result;
+  }
+
+    // 삭제
+  Future<void> deleteStudents(int seq) async{
+    final Database db = await initiallizeDB();
+    await db.rawDelete(
+      'delete from search where seq = ?',[seq]
+    );
   }
 
 }
