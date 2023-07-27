@@ -15,7 +15,7 @@ class MemoMainWidget extends StatelessWidget {
     final memoProvider = Provider.of<MemoProvider>(context, listen: false);
     
     return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('memo').orderBy('insertdate', descending: true).snapshots(),
+      stream: FirebaseFirestore.instance.collection('memo').where('id').orderBy('insertdate', descending: true).snapshots(),
       builder: (context, snapshot) {
         if(!snapshot.hasData){
           return const Center(
@@ -23,7 +23,8 @@ class MemoMainWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 CircularProgressIndicator(),
-                Text('Loading...')
+                Text('작성한 메모가 없습니다.'),
+                Text('메모를 작성해주세요')
               ],
             ),
           );
@@ -51,8 +52,19 @@ class MemoMainWidget extends StatelessWidget {
         child: const Icon(Icons.delete_forever),
       ),
       key: ValueKey(doc),
-      onDismissed: (direction) {
-        FirebaseFirestore.instance.collection('memo').doc(doc.id).delete();
+      confirmDismiss: (direction) async {
+        if(direction == DismissDirection.endToStart){
+          await Get.defaultDialog(
+            title: '삭제',
+            middleText: '정말 삭제하시겠습니까?',
+            onCancel: () => Get.back(),
+            onConfirm: () {
+              FirebaseFirestore.instance.collection('memo').doc(doc.id).delete();
+              Get.back();
+              Get.snackbar('메모', '메모가 삭제 되었습니다.', snackPosition: SnackPosition.BOTTOM, backgroundColor: Color(LabelColors.colorLabels[memoProvider.memoData.memoLabelColor]));
+            },
+          );
+        }
       },
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
