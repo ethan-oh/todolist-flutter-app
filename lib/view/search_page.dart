@@ -61,32 +61,37 @@ class _SearchPageState extends State<SearchPage> {
         ),
         
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-                .collection('memo')   
-                .snapshots(),
-        builder: (context, snapshot) {
-          if(!snapshot.hasData){
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          final documents = snapshot.data!.docs;          // docs <- document
-          return searchController.text.trim().isNotEmpty ? 
-          ListView(
-            children: documents.map((e) => _buildItemWidget(e)).toList(),
-          ) :
-          const Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                  Text(
-                    '데이터 없다.'
-                  )
-              ],
-            ),
-          );
+      body: GestureDetector(
+        onTap: () {
+          Focus.of(context).unfocus();
         },
+        child: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance
+                  .collection('memo')   
+                  .snapshots(),
+          builder: (context, snapshot) {
+            if(!snapshot.hasData){
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            final documents = snapshot.data!.docs;          // docs <- document
+            return searchController.text.trim().isNotEmpty ? 
+            ListView(
+              children: documents.map((e) => _buildItemWidget(e)).toList(),
+            ) :
+            const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                    Text(
+                      '데이터 없다.'
+                    )
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
