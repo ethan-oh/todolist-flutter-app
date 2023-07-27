@@ -33,7 +33,6 @@ class _WritePageState extends State<WritePage> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: labelColor,
           centerTitle: true,
           title: ToggleButtons(
             onPressed: (int index) {
@@ -137,11 +136,13 @@ class _WritePageState extends State<WritePage> {
                     controller: contentController,
                     maxLines: null,
                     minLines: 12,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: labelColor,
                       hintText: '내용을 입력하세요.',
                       labelText: '내용',
-                      labelStyle: TextStyle(),
-                      border: OutlineInputBorder(),
+                      labelStyle: const TextStyle(),
+                      border: const OutlineInputBorder(),
                       floatingLabelBehavior: FloatingLabelBehavior.always,
                     ),
                   ),
@@ -150,7 +151,6 @@ class _WritePageState extends State<WritePage> {
                     child: ElevatedButton(
                       onPressed: () {
                         _emptyCheck();
-                        _showDialog('입력 결과', '입력되었습니다.');
                         setState(() {});
                       },
                       style: ElevatedButton.styleFrom(
@@ -182,6 +182,7 @@ class _WritePageState extends State<WritePage> {
         'labelcolor': labelName,
         'insertdate': DateTime.now()
       });
+      _showDialog('입력 결과', '입력되었습니다.');
     }
   }
 
