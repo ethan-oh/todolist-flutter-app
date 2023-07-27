@@ -12,8 +12,8 @@ class MemoMainWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final memoProvider = Provider.of<MemoProvider>(context, listen: true);
-
+    final memoProvider = Provider.of<MemoProvider>(context, listen: false);
+    
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance.collection('memo').orderBy('insertdate', descending: true).snapshots(),
       builder: (context, snapshot) {
@@ -35,6 +35,7 @@ class MemoMainWidget extends StatelessWidget {
       }
     );
   }
+  
 
   Widget _buildItemWidget(DocumentSnapshot doc, MemoProvider memoProvider){
     final memoData = Memo(
@@ -72,7 +73,7 @@ class MemoMainWidget extends StatelessWidget {
                         child: Text(
                           memoData.contentText,
                           style: const TextStyle(
-                            fontSize: 25
+                            fontSize: 15
                           ),
                         )
                       ),
