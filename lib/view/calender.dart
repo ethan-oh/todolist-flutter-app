@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:team_four_todo_list_app/functions/label_color.dart';
+import 'package:flutter/foundation.dart';
 
 class Calender extends StatefulWidget {
   const Calender({super.key});
@@ -36,109 +36,125 @@ class _CalenderState extends State<Calender> {
 
     List<dynamic> selectedDateEvents = getEventDataForSelectedDate(_selectedDay);
 
-    return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('Calender'),
-      // ),
-      body: todoList.isEmpty
-          ? const Center(
-              child: Text('데이터가 비었습니다.'),
-            )
-          : Column(
-              children: [
-                TableCalendar(
-                  focusedDay: DateTime.now(),
-                  firstDay: DateTime.utc(2000, 01, 01),
-                  lastDay: DateTime.utc(2100, 12, 31),
-                  selectedDayPredicate: (day) {
-                    return isSameDay(_selectedDay, day);
-                  },
-                  onDaySelected: (selectedDay, focusedDay) {
-                    _selectedDay = selectedDay;
-                    _focusedDay = focusedDay;
-                    setState(() {
-                      //
-                    });
-                  },
-                  calendarFormat: _calendarFormat,
-                  onFormatChanged: (format) {
-                    _calendarFormat = format;
-                    setState(() {
-                      //
-                    });
-                  },
-                  onPageChanged: (focusedDay) {
-                    _focusedDay = focusedDay;
-                  },
-                  // eventLoader: (day) {
-                  //   return _getEventsForDay(day);
-                  // },
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      "UserID's TodoList",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 300,
-                      child: GridView.builder(
-                        itemCount: selectedDateEvents.length,
-                        scrollDirection: Axis.horizontal,
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          mainAxisSpacing: 5,
-                          crossAxisSpacing: 5,
+    return SafeArea(
+      child: Scaffold(
+        // appBar: AppBar(
+        //   title: const Text('Calender'),
+        // ),
+        body: todoList.isEmpty
+            ? const Center(
+                child: Text('데이터가 비었습니다.'),
+              )
+            : Column(
+                children: [
+                  TableCalendar(
+                    focusedDay: DateTime.now(),
+                    firstDay: DateTime.utc(2000, 01, 01),
+                    lastDay: DateTime.utc(2100, 12, 31),
+                    selectedDayPredicate: (day) {
+                      return isSameDay(_selectedDay, day);
+                    },
+                    onDaySelected: (selectedDay, focusedDay) {
+                      _selectedDay = selectedDay;
+                      _focusedDay = focusedDay;
+                      setState(() {
+                        //
+                      });
+                    },
+                    calendarFormat: _calendarFormat,
+                    onFormatChanged: (format) {
+                      _calendarFormat = format;
+                      setState(() {
+                        //
+                      });
+                    },
+                    onPageChanged: (focusedDay) {
+                      _focusedDay = focusedDay;
+                    },
+                    // eventLoader: (day) {
+                    //   return _getEventsForDay(day);
+                    // },
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          "UserID's TodoList",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green
+                          ),
                         ),
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                            onTap: () => Get.defaultDialog(
-                              title: "${selectedDateEvents[index]["t_title"]}",
-                              middleText: "${selectedDateEvents[index]["t_content"]}",
-                              backgroundColor: Colors.white,
-                              actions: [
-                                ElevatedButton(
-                                  onPressed: () => Get.back(),
-                                  child: const Text('OK'),
-                                ),
-                              ],
-                            ),
-                            child: Card(
-                              color: Colors.white,
-                              child: Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        selectedDateEvents[index]["t_title"],
-                                        style: const TextStyle(
-                                          fontSize: 25
-                                        ),
+                        Text(
+                          "Height : ${MediaQuery.of(context).size.height}",
+                        ),
+                        Text(
+                          "Width : ${MediaQuery.of(context).size.width}",
+                        ),
+                        selectedDateEvents.isNotEmpty
+                        ?
+                        SingleChildScrollView(
+                          child: SizedBox(
+                            height: (MediaQuery.of(context).size.height - kToolbarHeight - MediaQuery.of(context).padding.top) * 0.20,
+                            child: GridView.builder(
+                              itemCount: selectedDateEvents.length,
+                              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                mainAxisSpacing: 5,
+                                crossAxisSpacing: 5,
+                              ),
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
+                                  onTap: () => Get.defaultDialog(
+                                    title: "${selectedDateEvents[index]["t_title"]}",
+                                    middleText: "${selectedDateEvents[index]["t_content"]}",
+                                    backgroundColor: Colors.white,
+                                    actions: [
+                                      ElevatedButton(
+                                        onPressed: () => Get.back(),
+                                        child: const Text('OK'),
                                       ),
                                     ],
                                   ),
-                                  // Text(
-                                  //   selectedDateEvents[index]["t_content"],
-                                  //   style: const TextStyle(
-                                  //     fontSize: 15
-                                  //   ),
-                                  // )
-                                ],
-                              ),
+                                  child: Card(
+                                    color: Colors.white,
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              selectedDateEvents[index]["t_title"],
+                                              style: const TextStyle(
+                                                fontSize: 25
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        // Text(
+                                        //   selectedDateEvents[index]["t_content"],
+                                        //   style: const TextStyle(
+                                        //     fontSize: 15
+                                        //   ),
+                                        // )
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
-                          );
-                        },
-                      ),
+                          ),
+                        )
+                        : const Text('일정이 없습니다.')
+                      ],
                     ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                ],
+              ),
+      ),
     );
   }
 
