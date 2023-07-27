@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
+import 'package:team_four_todo_list_app/functions/label_color.dart';
 import 'package:team_four_todo_list_app/view/widget/memo/memo_detail_widget.dart';
 import 'package:team_four_todo_list_app/viewmodel/memo/memo_provider.dart';
 
@@ -20,13 +21,23 @@ class MemoDetailPage extends StatelessWidget {
               // print(_memoProvider.content);
               FirebaseFirestore.instance.collection('memo').doc(_memoProvider.id).update({'content' : _memoProvider.content});
               Get.back();
+              Get.snackbar('메모', '메모 내용이 변경 되었습니다.', snackPosition: SnackPosition.BOTTOM);
             },
             icon: const Icon(Icons.save_as_rounded),
           ),
           IconButton(
             onPressed: () {
-              FirebaseFirestore.instance.collection('memo').doc(_memoProvider.id).delete();
-              Get.back();
+              Get.defaultDialog(
+                title: '삭제',
+                middleText: '정말 삭제하시겠습니까?',
+                onCancel: () => Get.back(),
+                onConfirm: () async {
+                  await FirebaseFirestore.instance.collection('memo').doc(_memoProvider.id).delete();
+                  Get.back();
+                  Get.back();
+                  await Get.snackbar('메모', '메모가 삭제 되었습니다.', snackPosition: SnackPosition.BOTTOM, backgroundColor: Color(LabelColors.colorLabels[_memoProvider.memoData.memoLabelColor]));
+                },
+              );
             },
             icon: const Icon(Icons.delete_forever_rounded),
           ),
