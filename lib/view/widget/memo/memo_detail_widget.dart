@@ -8,7 +8,7 @@ class MemoDetailWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _memoProvider = Provider.of<MemoProvider>(context, listen: true);
+    final _memoProvider = Provider.of<MemoProvider>(context, listen: false);
     TextEditingController memoController = TextEditingController(text: _memoProvider.memoData.contentText);
 
     return Center(
@@ -18,22 +18,27 @@ class MemoDetailWidget extends StatelessWidget {
             padding: const EdgeInsets.all(15),
             child: Consumer<MemoProvider>(
               builder: (context, value, child) {
-                print('text = ${_memoProvider.memoData.contentText}');
-                print('text = ${value.memoData.contentText}');
+                // print('text = ${_memoProvider.memoData.contentText}');
+                // print('text = ${value.memoData.contentText}');
                 return Container(
-                  height: 450,
-                  color: Colors.amber,//Color(LabelColors.colorLabels[value.color]),
+                  height: 500,
+                  color: Color(LabelColors.colorLabels[value.memoData.memoLabelColor]),
                   child: Padding(
                     padding: const EdgeInsets.all(10),
                     child: SizedBox(
                       width: 350,
+                      height: 450,
                       child: TextField(
-                        readOnly: true,
                         controller: memoController,
+                        // readOnly: true,
                         maxLines: null,
-                        minLines: 12,
-                        decoration: const InputDecoration(
+                        minLines: 18,
+                        decoration: InputDecoration(
                           labelText: 'Memo',
+                          filled: true,
+                          fillColor: Color(LabelColors.colorLabels[value.memoData.memoLabelColor]),
+                          border: const OutlineInputBorder(),
+                          floatingLabelBehavior: FloatingLabelBehavior.always
                         ),
                       ),
                     ),
