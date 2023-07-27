@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:team_four_todo_list_app/functions/label_color.dart';
+import 'package:team_four_todo_list_app/view/home.dart';
 
 class WriteMemo extends StatefulWidget {
   const WriteMemo({super.key});
@@ -48,7 +50,7 @@ class _WriteMemoState extends State<WriteMemo> {
                   //   ),
                   // ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 20, bottom: 10),
+                    padding: const EdgeInsets.only(bottom: 10),
                     child: GestureDetector(
                       onTap: () => _showBottomSheet(context),
                       child: Row(
@@ -103,7 +105,6 @@ class _WriteMemoState extends State<WriteMemo> {
                     child: ElevatedButton(
                       onPressed: () {
                         _emptyCheck();
-                        setState(() {});
                       },
                       style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.green,
@@ -160,7 +161,8 @@ class _WriteMemoState extends State<WriteMemo> {
                     contentController.text = '';
                     labelName = LabelColors.colorLabels.keys.first;
                     labelColor = Color(LabelColors.colorLabels[labelName]);
-                    Navigator.of(context).pop();
+                    //Get.back();
+                    Get.offAll(const Home(), arguments: 1);
                   },
                   child: const Text('OK'),
                 ),

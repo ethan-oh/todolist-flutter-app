@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:team_four_todo_list_app/view/calender.dart';
 import 'package:team_four_todo_list_app/view/memo_page.dart';
 import 'package:team_four_todo_list_app/view/search_page.dart';
@@ -21,7 +22,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 5, vsync: this);
+    _tabController = TabController(length: 5, vsync: this, initialIndex: 0);
     _login = false;
   }
 
@@ -33,6 +34,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+
+    int initialTabIndex = Get.arguments ?? 0;
+    _tabController.index = initialTabIndex;
     return Scaffold(
       body: TabBarView(
         controller: _tabController,

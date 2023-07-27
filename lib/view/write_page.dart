@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:team_four_todo_list_app/view/widget/home_drawer.dart';
 import 'package:team_four_todo_list_app/view/write_memo.dart';
 import 'package:team_four_todo_list_app/view/write_schedule.dart';
 
@@ -29,28 +30,25 @@ class _WritePageState extends State<WritePage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: TabBar(
+        title: const Text('작성하기'),
+        centerTitle: true,
+        bottom: TabBar(
           controller: _WriteController,
           labelColor: Colors.green,
           tabs: const [
             Tab(
-              icon: Icon(
-                Icons.today_outlined,
-              ),
               text: '일정',
             ),
             Tab(
-              icon: Icon(
-                Icons.note_outlined,
-              ),
               text: '메모',
             ),
           ],
         ),
       ),
+      drawer: const HomeDrawer(),
       body: TabBarView(
         controller: _WriteController,
-        children: const[
+        children: const [
           WriteSchedule(),
           WriteMemo(),
         ],
