@@ -1,10 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import 'package:team_four_todo_list_app/functions/label_color.dart';
-import 'package:team_four_todo_list_app/model/search/search_fb.dart';
+import 'package:team_four_todo_list_app/model/memo/memo.dart';
 import 'package:team_four_todo_list_app/model/search/search_sql.dart';
 import 'package:team_four_todo_list_app/model/search/search_sqldb.dart';
+import 'package:team_four_todo_list_app/view/memo_detail_page.dart';
+import 'package:team_four_todo_list_app/viewmodel/memo/memo_provider.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -15,18 +18,20 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   late TextEditingController searchController;
-  late List memoData;
+  late List memoData; 
   DatabaseHandler handler = DatabaseHandler();
 
   @override
   void initState() {
     super.initState();
     searchController = TextEditingController();
+    searchController.text = '';
     memoData = [];
   }
 
   @override
   Widget build(BuildContext context) {
+  final memoProvider = Provider.of<MemoProvider>(context,listen: false);
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
@@ -48,8 +53,9 @@ class _SearchPageState extends State<SearchPage> {
                           duration: const Duration(seconds: 2),
                           backgroundColor: Colors.red,
                         );
+                      }else{
+                        addScearch();
                       }
-                      addScearch();
                       setState(() {});
                     },
                     child: const Icon(Icons.search),
@@ -59,10 +65,13 @@ class _SearchPageState extends State<SearchPage> {
               ),
               const Row(
                 children: [
-                  Text(
-                    '최근 검색어',
-                    style: TextStyle(
-                      fontSize: 10,
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      '최근 검색어',
+                      style: TextStyle(
+                        fontSize: 10,
+                      ),
                     ),
                   ),
                 ],
@@ -71,39 +80,39 @@ class _SearchPageState extends State<SearchPage> {
                   future: handler.querySearch(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      return SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: SizedBox(
-                          width: 500,
-                          height: 50,
-                          child: ListView.separated(
-                            scrollDirection: Axis.horizontal,
-                            separatorBuilder: (context, index) =>
-                                const SizedBox(width: 0), // 구분자 설정
-                            itemCount: snapshot.data!.length,
-                            itemBuilder: (context, index) {
-                              return TextButton(
-                                  onPressed: () {
-                                    searchController.text = snapshot.data![index].content;
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Text(snapshot.data![index].content
-                                          .toString()),
-                                      IconButton(
-                                          onPressed: () {
-                                            handler.deleteStudents(
-                                                snapshot.data![index].seq!);
-                                            setState(() {});
-                                          },
-                                          icon: const Icon(
-                                            Icons.close,
-                                            size: 15,
-                                          )),
-                                    ],
-                                  ));
-                            },
-                          ),
+                      return SizedBox(
+                        width: 500,
+                        height: 50,
+                        child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(width: 0), // 구분자 설정
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (context, index) {
+                            return TextButton (
+                                onPressed: () {
+                                  searchController.text = snapshot.data![index].content;
+                                  setState(() {
+                                    
+                                  });
+                                },
+                                child: Row(
+                                  children: [
+                                    Text(snapshot.data![index].content
+                                        .toString()),
+                                    IconButton(
+                                        onPressed: () {
+                                          handler.deleteSearch(
+                                              snapshot.data![index].seq!);
+                                          setState(() {});
+                                        },
+                                        icon: const Icon(
+                                          Icons.close,
+                                          size: 15,
+                                        )),
+                                  ],
+                                ));
+                          },
                         ),
                       );
                     } else {
@@ -125,7 +134,7 @@ class _SearchPageState extends State<SearchPage> {
             return searchController.text.trim().isNotEmpty
                 ? ListView(
                     children:
-                        documents.map((e) => _buildItemWidget(e)).toList(),
+                        documents.map((e) => _buildItemWidget(e, memoProvider)).toList(),
                   )
                 : Center(
                     child: Column(
@@ -148,19 +157,24 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   // functions
-  Widget _buildItemWidget(DocumentSnapshot doc) {
-    var memoData = SearchFB(
-        insertDate: doc['insertdate'],
-        labelColor: doc['labelcolor'],
-        content: doc['content']);
-    return memoData.content.contains(searchController.text)
-        ? Card(
-            color: Color(LabelColors.colorLabels[memoData.labelColor]),
-            child: ListTile(title: Text(memoData.content)),
-          )
-        : const SizedBox(
-            width: 0,
-          );
+  Widget _buildItemWidget(DocumentSnapshot doc, MemoProvider memoProvider) {
+    var memoData = Memo(
+        insertdate: doc['insertdate'].toDate().toString().substring(0, 16).replaceAll(":", "시 "),
+        memoLabelColor: doc['labelcolor'],
+        contentText: doc['content']);
+    return memoData.contentText.contains(searchController.text)
+        ? GestureDetector(
+          onTap: () {
+            memoProvider.addList(memoData);
+            memoProvider.setDocId(doc.id);
+            Get.to(const MemoDetailPage());
+          },
+          child: Card(
+              color: Color(LabelColors.colorLabels[memoData.memoLabelColor]),
+              child: ListTile(title: Text(memoData.contentText)),
+            ),
+        )
+        : const SizedBox(width: 0,);
   }
 
   Future<int> addScearch() async {
@@ -170,4 +184,5 @@ class _SearchPageState extends State<SearchPage> {
     await handler.insertSearch(firstSearch);
     return 0;
   }
+
 } // end
