@@ -1,5 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:team_four_todo_list_app/firebase_options.dart';
@@ -29,6 +31,14 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
           useMaterial3: true,
         ),
+        localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        DefaultCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('ko', ''),
+      ],
         home: const Home(),
       ),
     );
