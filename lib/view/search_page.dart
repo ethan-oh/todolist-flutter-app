@@ -28,70 +28,65 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: GestureDetector(
-        onTap: () => Focus.of(context).unfocus(),
-        child: Scaffold(
-          appBar: AppBar(
-            toolbarHeight: 100,
-            title: Column(
-              children: [
-                const Text('Search'),
-                TextField(
-                  controller: searchController,
-                  decoration: InputDecoration(
-                      suffixIcon: GestureDetector(
-                    onTap: () {
-                      if(searchController.text.trim().isEmpty){
-                       Get.snackbar(
-                          '안녕', 
-                          '검색할 내용을 입력해주세요',
-                          snackPosition: SnackPosition.BOTTOM,  // 스낵바 위치
-                          duration: const Duration(seconds: 2),
-                          backgroundColor: Colors.yellowAccent,
-                        );
-                      }
-                      setState(() {
-                        
-                      });
-                    },
-                    child: const Icon(Icons.search),
-                    ),
-                  ),
-                  keyboardType: TextInputType.text,
+    return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 100,
+        title: Column(
+          children: [
+            const Text('Search'),
+            TextField(
+              controller: searchController,
+              decoration: InputDecoration(
+                  suffixIcon: GestureDetector(
+                onTap: () {
+                  if(searchController.text.trim().isEmpty){
+                   Get.snackbar(
+                      '안녕', 
+                      '검색할 내용을 입력해주세요',
+                      snackPosition: SnackPosition.BOTTOM,  // 스낵바 위치
+                      duration: const Duration(seconds: 2),
+                      backgroundColor: Colors.yellowAccent,
+                    );
+                  }
+                  setState(() {
+                    
+                  });
+                },
+                child: const Icon(Icons.search),
                 ),
+              ),
+              keyboardType: TextInputType.text,
+            ),
+          ],
+        ),
+        
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+                .collection('memo')   
+                .snapshots(),
+        builder: (context, snapshot) {
+          if(!snapshot.hasData){
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          final documents = snapshot.data!.docs;          // docs <- document
+          return searchController.text.trim().isNotEmpty ? 
+          ListView(
+            children: documents.map((e) => _buildItemWidget(e)).toList(),
+          ) :
+          const Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                  Text(
+                    '데이터 없다.'
+                  )
               ],
             ),
-            
-          ),
-          body: StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance
-                    .collection('memo')   
-                    .snapshots(),
-            builder: (context, snapshot) {
-              if(!snapshot.hasData){
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-              final documents = snapshot.data!.docs;          // docs <- document
-              return searchController.text.trim().isNotEmpty ? 
-              ListView(
-                children: documents.map((e) => _buildItemWidget(e)).toList(),
-              ) :
-              const Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                      Text(
-                        '데이터 없다.'
-                      )
-                  ],
-                ),
-              );
-            },
-          ),
-        ),
+          );
+        },
       ),
     );
   }
