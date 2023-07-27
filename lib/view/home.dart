@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:team_four_todo_list_app/view/calender.dart';
 import 'package:team_four_todo_list_app/view/memo_page.dart';
 import 'package:team_four_todo_list_app/view/search_page.dart';
+import 'package:team_four_todo_list_app/view/widget/home_drawer.dart';
 import 'package:team_four_todo_list_app/view/write_page.dart';
 
 class Home extends StatefulWidget {
@@ -35,45 +36,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     return Scaffold(
       appBar: AppBar(
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero, // // 리스트 뷰 상단 시계부분에 적용되는 패딩 제거.
-          children:  [
-            const UserAccountsDrawerHeader( // drawer의 유저 위젯
-              accountName: Text('오성민'), 
-              accountEmail: Text('osm6227@gmail.com'),
-              currentAccountPicture: Padding(
-                padding: EdgeInsets.all(5.0),
-                child: CircleAvatar( // user image
-                ),
-              ),
-              decoration: BoxDecoration(
-                color: Colors.green, // 헤더 배경색
-                borderRadius: BorderRadius.only( // 헤더 테두리 라운딩
-                  bottomLeft: Radius.circular(30),
-                  bottomRight: Radius.circular(30),
-                ),
-              ),
-            ),
-            ListTile( // drawer의 리스트타일
-              leading: const Icon( // 타일의 리딩 아이콘
-                Icons.mail,
-                color: Colors.blue,
-              ),
-              title: const Text(''),
-              onTap: () => Navigator.pushNamed(context, '/'),
-            ),
-            ListTile( // drawer의 리스트타일
-              leading: const Icon( // 타일의 리딩 아이콘
-                Icons.person,
-                color: Colors.blue,
-              ),
-              title: const Text('회원가입'),
-              onTap: () => Navigator.pushNamed(context, '/'),
-            ),
-          ],
-        ),
-      ),
+      drawer: const HomeDrawer(),
       body: TabBarView(
         controller: _tabController,
         children: const [
