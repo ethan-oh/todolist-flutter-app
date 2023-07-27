@@ -20,6 +20,9 @@ class _CalenderState extends State<Calender> {
   late DateTime _focusedDay;
   late CalendarFormat _calendarFormat;
   late List todoList;
+  late bool isCompleted;
+  late TextEditingController titleTec;
+  late TextEditingController contentTec;
 
   @override
   void initState() {
@@ -28,13 +31,16 @@ class _CalenderState extends State<Calender> {
     _focusedDay = DateTime.now();
     _calendarFormat = CalendarFormat.month;
     todoList = [];
+    isCompleted = false;
+    titleTec = TextEditingController();
+    contentTec = TextEditingController();
     getTodoList();
   }
 
   @override
   Widget build(BuildContext context) {
-
-    List<dynamic> selectedDateEvents = getEventDataForSelectedDate(_selectedDay);
+    List<dynamic> selectedDateEvents =
+        getEventDataForSelectedDate(_selectedDay);
 
     return SafeArea(
       child: Scaffold(
@@ -45,114 +51,216 @@ class _CalenderState extends State<Calender> {
             ? const Center(
                 child: Text('데이터가 비었습니다.'),
               )
-            : Column(
-                children: [
-                  TableCalendar(
-                    focusedDay: DateTime.now(),
-                    firstDay: DateTime.utc(2000, 01, 01),
-                    lastDay: DateTime.utc(2100, 12, 31),
-                    selectedDayPredicate: (day) {
-                      return isSameDay(_selectedDay, day);
-                    },
-                    onDaySelected: (selectedDay, focusedDay) {
-                      _selectedDay = selectedDay;
-                      _focusedDay = focusedDay;
-                      setState(() {
-                        //
-                      });
-                    },
-                    calendarFormat: _calendarFormat,
-                    onFormatChanged: (format) {
-                      _calendarFormat = format;
-                      setState(() {
-                        //
-                      });
-                    },
-                    onPageChanged: (focusedDay) {
-                      _focusedDay = focusedDay;
-                    },
-                    // eventLoader: (day) {
-                    //   return _getEventsForDay(day);
-                    // },
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          "UserID's TodoList",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.green
+            : SingleChildScrollView(
+                child: Column(
+                  children: [
+                    TableCalendar(
+                      focusedDay: DateTime.now(),
+                      firstDay: DateTime.utc(2000, 01, 01),
+                      lastDay: DateTime.utc(2100, 12, 31),
+                      selectedDayPredicate: (day) {
+                        return isSameDay(_selectedDay, day);
+                      },
+                      onDaySelected: (selectedDay, focusedDay) {
+                        _selectedDay = selectedDay;
+                        _focusedDay = focusedDay;
+                        setState(() {
+                          //
+                        });
+                      },
+                      calendarFormat: _calendarFormat,
+                      onFormatChanged: (format) {
+                        _calendarFormat = format;
+                        setState(() {
+                          //
+                        });
+                      },
+                      onPageChanged: (focusedDay) {
+                        _focusedDay = focusedDay;
+                      },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.all(10.0),
+                            child: Text(
+                              "UserID's TodoList",
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green),
+                            ),
                           ),
-                        ),
-                        Text(
-                          "Height : ${MediaQuery.of(context).size.height}",
-                        ),
-                        Text(
-                          "Width : ${MediaQuery.of(context).size.width}",
-                        ),
-                        selectedDateEvents.isNotEmpty
-                        ?
-                        SingleChildScrollView(
-                          child: SizedBox(
-                            height: (MediaQuery.of(context).size.height - kToolbarHeight - MediaQuery.of(context).padding.top) * 0.20,
-                            child: GridView.builder(
-                              itemCount: selectedDateEvents.length,
-                              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                mainAxisSpacing: 5,
-                                crossAxisSpacing: 5,
-                              ),
-                              itemBuilder: (context, index) {
-                                return GestureDetector(
-                                  onTap: () => Get.defaultDialog(
-                                    title: "${selectedDateEvents[index]["t_title"]}",
-                                    middleText: "${selectedDateEvents[index]["t_content"]}",
-                                    backgroundColor: Colors.white,
-                                    actions: [
-                                      ElevatedButton(
-                                        onPressed: () => Get.back(),
-                                        child: const Text('OK'),
+                          Text(
+                            '${_selectedDay.toString().substring(0,10)} 일정 : ${selectedDateEvents.length}개'
+                          ),
+                          selectedDateEvents.isNotEmpty
+                              ? Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: SizedBox(
+                                    height:
+                                        (MediaQuery.of(context).size.height -
+                                                kToolbarHeight -
+                                                MediaQuery.of(context)
+                                                    .padding
+                                                    .top) *
+                                            0.20,
+                                    child: ListView.builder(
+                                      itemCount: selectedDateEvents.length,
+                                      itemBuilder: (context, index) {
+                                        return GestureDetector(
+                                          onTap: () => Get.bottomSheet(
+                                            Container(
+                                              color: Colors.white,
+                                              child: Column(
+                                                children: [
+                                                  Padding(
+                                                padding:
+                                                    const EdgeInsets.all(20.0),
+                                                child: Column(
+                                                  crossAxisAlignment : CrossAxisAlignment.start,
+                                                  mainAxisSize : MainAxisSize.min,
+                                                  children: [
+                                                    TextField(
+                                                      controller: titleTec,
+                                                      decoration: const InputDecoration(
+                                                        labelText: "제목",
+                                                      ),
+                                                    ),
+                                                    const SizedBox(height: 10),
+                                                    TextField(
+                                                      controller: contentTec,
+                                                      decoration: const InputDecoration(
+                                                        labelText: "내용",
+                                                      ),
+                                                      minLines: 1,
+                                                    ),
+                                                    const SizedBox(height: 20),
+                                                    Text(
+                                                      '작성일자 : ${selectedDateEvents[index]["t_insertDate"].toString().substring(0, 10)}'
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        const Text(
+                                                          '완료 여부 :',
+                                                          style: TextStyle(
+                                                            fontSize: 16,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                        Checkbox(
+                                                          value: selectedDateEvents[index]["t_status"],
+                                                          onChanged: (value) {
+                                                            selectedDateEvents[index]["t_status"] = value;
+                                                            setState(() {
+                                                              //
+                                                            });
+                                                          },
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        ElevatedButton(
+                                                          onPressed: () {
+                                                            //
+                                                          },
+                                                          child: const Text('수정'),
+                                                        ),
+                                                        ElevatedButton(
+                                                          onPressed: () {
+                                                            Get.back();
+                                                          },
+                                                          child: const Text('닫기'),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          child: SizedBox(
+                                            height: 100,
+                                            child: Card(
+                                            color: Colors.white,
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  selectedDateEvents[index]["t_status"]
+                                                  ?
+                                                  Stack(
+                                                    children: [
+                                                      const CircleAvatar(
+                                                        backgroundImage: AssetImage(
+                                                          'images/good.png',
+                                                        ),
+                                                        radius: 30,
+                                                        backgroundColor: Colors.white,
+                                                      ),
+                                                      Text(
+                                                        selectedDateEvents[index]["t_title"],
+                                                        style: const TextStyle(
+                                                          fontSize: 25,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  )
+                                                  :
+                                                  Row(
+                                                    mainAxisAlignment : MainAxisAlignment.center,
+                                                    children: [
+                                                      Text(
+                                                        selectedDateEvents[index]["t_title"],
+                                                        style: const TextStyle(
+                                                          fontSize: 25,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                )
+                              : Center(
+                                child: SizedBox(
+                                  height: (MediaQuery.of(context).size.height -
+                                            kToolbarHeight -
+                                            MediaQuery.of(context)
+                                                .padding
+                                                .top) *
+                                        0.20,
+                                  child: const Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        '일정이 없습니다.',
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                        ),
                                       ),
                                     ],
                                   ),
-                                  child: Card(
-                                    color: Colors.white,
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              selectedDateEvents[index]["t_title"],
-                                              style: const TextStyle(
-                                                fontSize: 25
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        // Text(
-                                        //   selectedDateEvents[index]["t_content"],
-                                        //   style: const TextStyle(
-                                        //     fontSize: 15
-                                        //   ),
-                                        // )
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        )
-                        : const Text('일정이 없습니다.')
-                      ],
+                                ),
+                              )
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
       ),
     );
@@ -160,8 +268,7 @@ class _CalenderState extends State<Calender> {
 
   // ---- Functions ----
   getTodoList() async {
-    var url =
-        Uri.parse('http://localhost:8080/Flutter/team4_todolist_select.jsp');
+    var url = Uri.parse('http://localhost:8080/Flutter/team4_todolist_select.jsp');
     var response = await http.get(url);
     // print(response.body);
     todoList.clear(); // 화면에 데이터 정리. 안하면 쌓일 수 있음.
@@ -177,11 +284,13 @@ class _CalenderState extends State<Calender> {
 
   List<dynamic> getEventDataForSelectedDate(DateTime selectedDate) {
     return todoList.where((event) {
-      DateTime eventDate = DateTime.parse(
-          event['t_insertDate']); // JSON 데이터에 'date' 필드가 'yyyy-MM-dd' 형식으로 있다고 가정합니다.
+      DateTime eventDate = DateTime.parse(event[
+          't_insertDate']); // JSON 데이터에 'date' 필드가 'yyyy-MM-dd' 형식으로 있다고 가정합니다.
       return eventDate.year == selectedDate.year &&
           eventDate.month == selectedDate.month &&
           eventDate.day == selectedDate.day;
     }).toList();
   }
+
+  updateStatus() {}
 }   // End
