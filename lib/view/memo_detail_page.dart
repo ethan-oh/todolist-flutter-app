@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:team_four_todo_list_app/view/widget/memo/memo_detail_widget.dart';
-import 'package:team_four_todo_list_app/viewmodel/memo/memo_provider.dart';
 
 class MemoDetailPage extends StatelessWidget {
   const MemoDetailPage({super.key});
@@ -9,11 +7,24 @@ class MemoDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: ChangeNotifierProvider(
-        create: (context) => MemoProvider(),
-        child: const MemoDetailWidget(),
+      appBar: AppBar(
+        title: const Text('메모 보기'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              //
+            },
+            icon: const Icon(Icons.save_as_rounded),
+          ),
+          IconButton(
+            onPressed: () {
+              //
+            },
+            icon: const Icon(Icons.delete_forever_rounded),
+          ),
+        ],
       ),
+      body: const MemoDetailWidget(),
     );
   }
 }
