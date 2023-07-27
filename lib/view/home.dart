@@ -34,9 +34,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-      ),
-      drawer: const HomeDrawer(),
       body: TabBarView(
         controller: _tabController,
         children: const [
