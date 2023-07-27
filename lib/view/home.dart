@@ -15,11 +15,13 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   // Property
   late TabController _tabController;
+  late bool _login;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 5, vsync: this);
+    _login = false;
   }
 
   @override
@@ -59,6 +61,14 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 color: Colors.blue,
               ),
               title: const Text(''),
+              onTap: () => Navigator.pushNamed(context, '/'),
+            ),
+            ListTile( // drawer의 리스트타일
+              leading: const Icon( // 타일의 리딩 아이콘
+                Icons.person,
+                color: Colors.blue,
+              ),
+              title: const Text('회원가입'),
               onTap: () => Navigator.pushNamed(context, '/'),
             ),
           ],

@@ -2,8 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:team_four_todo_list_app/model/memo/customer.dart';
-import 'package:team_four_todo_list_app/model/memo/message.dart';
 import 'package:team_four_todo_list_app/view/join_page.dart';
 
 class LoginPage extends StatefulWidget {
