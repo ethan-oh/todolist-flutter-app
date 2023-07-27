@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:team_four_todo_list_app/functions/label_color.dart';
 import 'package:team_four_todo_list_app/model/search_fb.dart';
+import 'package:team_four_todo_list_app/model/search_sql.dart';
+import 'package:team_four_todo_list_app/model/search_sqldb.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -16,6 +18,7 @@ class _SearchPageState extends State<SearchPage> {
   late List memoData;
   late List searchData;
   late int conut;
+  DatabaseHandler handler = DatabaseHandler();
 
   @override
   void initState() {
@@ -28,44 +31,65 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 100,
-        title: Column(
-          children: [
-            const Text('Search'),
-            TextField(
-              controller: searchController,
-              decoration: InputDecoration(
-                  suffixIcon: GestureDetector(
-                onTap: () {
-                  if(searchController.text.trim().isEmpty){
-                   Get.snackbar(
-                      '안녕', 
-                      '검색할 내용을 입력해주세요',
-                      snackPosition: SnackPosition.BOTTOM,  // 스낵바 위치
-                      duration: const Duration(seconds: 2),
-                      backgroundColor: Colors.yellowAccent,
-                    );
-                  }
-                  setState(() {
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 100,
+          title: Column(
+            children: [
+              const Text('Search'),
+              TextField(
+                controller: searchController,
+                decoration: InputDecoration(
+                    suffixIcon: GestureDetector(
+                  onTap: () {
+                    if(searchController.text.trim().isEmpty){
+                     Get.snackbar(
+                        'Error', 
+                        '검색할 내용을 입력해주세요',
+                        snackPosition: SnackPosition.BOTTOM,  // 스낵바 위치
+                        duration: const Duration(seconds: 2),
+                        backgroundColor: Colors.red,
+                      );
+                    }
+                    addScearch();
                     
-                  });
-                },
-                child: const Icon(Icons.search),
+                    // FutureBuilder(
+                    //   future: handler.querySearch(),
+                    //   builder: (context, snapshot) {
+                    //     if(snapshot.hasData){
+                    //       return ListView.builder(
+                    //         itemCount: snapshot.data?.length,
+                    //         itemBuilder: (context, index) {
+                    //           return TextButton.icon(
+                    //             onPressed: () {
+                                  
+                    //             }, 
+                    //             icon: const Icon(Icons.cancel), 
+                    //             label: Text(snapshot.data![index].context)
+                    //           );
+                    //         },
+                    //       );
+                    //     }else{
+                    //       return SizedBox(width: 0,);
+                    //     }
+                    //   },
+                    // );
+                    setState(() {
+                      
+                    });
+                  },
+                  child: const Icon(Icons.search),
+                  ),
                 ),
+                keyboardType: TextInputType.text,
               ),
-              keyboardType: TextInputType.text,
-            ),
-          ],
+            ],
+          ),
+          
         ),
-        
-      ),
-      body: GestureDetector(
-        onTap: () {
-          Focus.of(context).unfocus();
-        },
-        child: StreamBuilder<QuerySnapshot>(
+        body: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance
                   .collection('memo')   
                   .snapshots(),
@@ -80,12 +104,17 @@ class _SearchPageState extends State<SearchPage> {
             ListView(
               children: documents.map((e) => _buildItemWidget(e)).toList(),
             ) :
-            const Center(
+            Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                    Text(
-                      '데이터 없다.'
+                    const Text(
+                      '검색어를 입력해주세요.'
+                    ),
+                    SizedBox(
+                      width: 150,
+                      child: Image.network('https://www.hushwish.com/wp-content/uploads/2018/11/emo_cashbee_012.gif',
+                      ),
                     )
                 ],
               ),
@@ -111,4 +140,12 @@ class _SearchPageState extends State<SearchPage> {
       )
       : const SizedBox(width: 0,);
     }
+
+  Future<int> addScearch() async {
+    SearchSql firstSearch = SearchSql(
+        content: searchController.text,
+        );
+    await handler.insertSearch(firstSearch);
+    return 0;
+  }
   } // end
