@@ -17,7 +17,9 @@ class MemoDetailPage extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              //FirebaseFirestore.instance.collection('memo').doc(_memoProvider.id).update({'content' : });
+              // print(_memoProvider.content);
+              FirebaseFirestore.instance.collection('memo').doc(_memoProvider.id).update({'content' : _memoProvider.content});
+              Get.back();
             },
             icon: const Icon(Icons.save_as_rounded),
           ),
