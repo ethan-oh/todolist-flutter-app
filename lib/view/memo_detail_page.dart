@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:team_four_todo_list_app/functions/label_color.dart';
-import 'package:team_four_todo_list_app/model/memo/memo.dart';
 import 'package:team_four_todo_list_app/view/widget/memo/memo_detail_widget.dart';
 import 'package:team_four_todo_list_app/viewmodel/memo/memo_provider.dart';
 
@@ -13,6 +12,7 @@ class MemoDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _memoProvider = Provider.of<MemoProvider>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('메모 보기'),
@@ -23,8 +23,10 @@ class MemoDetailPage extends StatelessWidget {
           ),
           IconButton(
             onPressed: () {
-              // print(_memoProvider.content);
-              FirebaseFirestore.instance.collection('memo').doc(_memoProvider.id).update({'content' : _memoProvider.content, 'labelcolor' : _memoProvider.color});
+              print(_memoProvider.memoData.contentText);
+              print(_memoProvider.memoData.memoLabelColor);
+              FirebaseFirestore.instance.collection('memo').doc(_memoProvider.id).update({'content' : _memoProvider.memoData.contentText, 'labelcolor' : _memoProvider.memoData.memoLabelColor});
+
               Get.back();
               Get.snackbar('메모', '메모 내용이 변경 되었습니다.', snackPosition: SnackPosition.BOTTOM);
             },
@@ -89,7 +91,8 @@ class MemoDetailPage extends StatelessWidget {
                       ),
                     ),
                     onTap: () {
-                      memoProvider.addColor(entry.key);
+                      memoProvider.updateColor(entry.key);
+                      print(memoProvider.memoData.memoLabelColor);
                       Get.back();
                     },
                   ),

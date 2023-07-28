@@ -22,9 +22,7 @@ class MemoDetailWidget extends StatelessWidget {
                 return Container(
                   height: MediaQuery.of(context).size.height * 0.75,
                   decoration: BoxDecoration(
-                    color: _memoProvider.color.isEmpty 
-                    ? Color(LabelColors.colorLabels[value.memoData.memoLabelColor]) 
-                    : Color(LabelColors.colorLabels[_memoProvider.color]),
+                    color: Color(LabelColors.colorLabels[value.memoData.memoLabelColor]),
                     borderRadius: BorderRadius.circular(15)
                   ),
                   child: SingleChildScrollView(
@@ -48,9 +46,7 @@ class MemoDetailWidget extends StatelessWidget {
                                 decoration: InputDecoration(
                                   labelText: 'Memo',
                                   filled: true,
-                                  fillColor: _memoProvider.color.isEmpty 
-                                    ? Color(LabelColors.colorLabels[value.memoData.memoLabelColor]) 
-                                    : Color(LabelColors.colorLabels[_memoProvider.color]),
+                                  fillColor: Color(LabelColors.colorLabels[value.memoData.memoLabelColor]),
                                   border: const OutlineInputBorder(),
                                   floatingLabelBehavior: FloatingLabelBehavior.always
                                 ),
@@ -69,9 +65,7 @@ class MemoDetailWidget extends StatelessWidget {
                             decoration: InputDecoration(
                               labelText: '메모 생성 날짜',
                               filled: true,
-                              fillColor: _memoProvider.color.isEmpty 
-                                ? Color(LabelColors.colorLabels[value.memoData.memoLabelColor]) 
-                                : Color(LabelColors.colorLabels[_memoProvider.color]),
+                              fillColor: Color(LabelColors.colorLabels[value.memoData.memoLabelColor]),
                               border: InputBorder.none,
                               floatingLabelBehavior: FloatingLabelBehavior.always,
                             ),
