@@ -43,7 +43,7 @@ class _WriteMemoState extends State<WriteMemo> {
                 children: [
                   // TextField(
                   //   // 메모제목  ------------
-                  //   controller: titleController,
+                  //   controller: titleController, 
                   //   maxLength: 30,
                   //   decoration: const InputDecoration(
                   //     hintText: '제목을 입력하세요.',
