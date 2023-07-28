@@ -6,6 +6,7 @@ class MemoProvider extends ChangeNotifier{
   // String _color = '';
   Memo _memoData = Memo(contentText: '', memoLabelColor: '', insertdate: '');
   String _content = '';
+  String _color = '';
   String _id = '';
 
   // String get content => _contents;
@@ -19,6 +20,7 @@ class MemoProvider extends ChangeNotifier{
 
   Memo get memoData => _memoData;
   String get content => _content;
+  String get color => _color;
   String get id => _id;
 
   addList(Memo memo){
@@ -28,6 +30,11 @@ class MemoProvider extends ChangeNotifier{
 
   setDocId(String docId){
     _id = docId;
+    notifyListeners();
+  }
+
+  addColor(String memocolor){
+    _color = memocolor;
     notifyListeners();
   }
 
