@@ -18,6 +18,7 @@ class _CalenderState extends State<Calender> {
   late DateTime _focusedDay;
   late CalendarFormat _calendarFormat;
   late List todoList;
+  late double _size;
   
 
   @override
@@ -27,14 +28,16 @@ class _CalenderState extends State<Calender> {
     _focusedDay = DateTime.now();
     _calendarFormat = CalendarFormat.month;
     todoList = [];
-    
     getTodoList();
+    _size = 0.4;
 
-
+    // var result = Get.arguments ?? "";
+  
   }
 
   @override
   Widget build(BuildContext context) {
+
     List<dynamic> selectedDateEvents =
         getEventDataForSelectedDate(_selectedDay);
 
@@ -67,6 +70,12 @@ class _CalenderState extends State<Calender> {
                       calendarFormat: _calendarFormat,
                       onFormatChanged: (format) {
                         _calendarFormat = format;
+                        print(_calendarFormat);
+                        _calendarFormat == CalendarFormat.twoWeeks
+                        ? _size = 0.6
+                        : _calendarFormat == CalendarFormat.week
+                        ? _size = 0.8
+                        : _size = 0.4;
                         setState(() {
                           //
                         });
@@ -90,16 +99,26 @@ class _CalenderState extends State<Calender> {
                                   color: Colors.green),
                             ),
                           ),
-                          
-                          Text(
-                            '${_selectedDay.toString().substring(0,10)} 일정 : ${selectedDateEvents.length}개 / 미완료(${countFalseStatus(selectedDateEvents)}/${selectedDateEvents.length}개)'
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                '${_selectedDay.toString().substring(0,10)} 일정 : ${selectedDateEvents.length}개'
+                              ),
+                              Text(
+                                '/ 미완료(${countFalseStatus(selectedDateEvents)}/${selectedDateEvents.length}개)',
+                                style: const TextStyle(
+                                  color: Colors.green,
+                                ),
+                              )
+                            ],
                           ),
                           selectedDateEvents.isNotEmpty
                               ? Padding(
                                   padding: const EdgeInsets.all(10.0),
                                   child: SizedBox(
                                     height: (MediaQuery.of(context).size.height - kToolbarHeight -
-                                              MediaQuery.of(context).padding.top) * 0.80,
+                                              MediaQuery.of(context).padding.top) * _size,
                                     child: ListView.builder(
                                       itemCount: selectedDateEvents.length,
                                       itemBuilder: (context, index) {
@@ -111,16 +130,22 @@ class _CalenderState extends State<Calender> {
                                             selectedDateEvents[index]["t_status"],
                                             selectedDateEvents[index]["t_insertDate"],
                                             selectedDateEvents[index]["t_no"],
+                                            selectedDateEvents[index]["t_important"],
+                                            selectedDateEvents[index]["t_startDate"],
+                                            selectedDateEvents[index]["t_endDate"],
                                             ],
                                           )?.then((value) {
-                                            Get.snackbar(
-                                              '수정 완료',
-                                              '일정이 성공적으로 수정 되었습니다.',
-                                              icon: const Icon(
-                                                Icons.access_alarm,
-                                              ),
-                                              backgroundColor: Colors.green,
-                                            );
+                                            if(value == "OK") {
+                                              Get.snackbar(
+                                                '수정 완료',
+                                                '일정이 성공적으로 수정 되었습니다.',
+                                                icon: const Icon(
+                                                  Icons.access_alarm,
+                                                  color: Colors.green,
+                                                ),
+                                                // backgroundColor: Colors.green,
+                                              );
+                                            }
                                             getTodoList();
                                           },);
                                           },
@@ -136,7 +161,7 @@ class _CalenderState extends State<Calender> {
                                               child: Card(
                                                 color: Colors.white,
                                                 child: Stack(
-                                                  alignment: Alignment.center, // 텍스트를 가운데로 정렬하기 위한 정렬 설정
+                                                  alignment: Alignment.center,
                                                   children: [
                                                     if (selectedDateEvents[index]["t_status"])
                                                       Positioned(
@@ -154,6 +179,21 @@ class _CalenderState extends State<Calender> {
                                                       ),
                                                       textAlign: TextAlign.center,
                                                     ),
+                                                    selectedDateEvents[index]["t_important"]
+                                                      ? const Positioned(
+                                                          right: 20.0,
+                                                          child: Icon(
+                                                            Icons.star,
+                                                            color: Colors.amber,
+                                                          ),
+                                                      )
+                                                      : const Positioned(
+                                                          right: 20.0,
+                                                          child: Icon(
+                                                            Icons.star,
+                                                            color: Colors.grey,
+                                                          ),
+                                                      )
                                                   ],
                                                 ),
                                               ),
@@ -200,9 +240,9 @@ class _CalenderState extends State<Calender> {
     var url = Uri.parse('http://localhost:8080/Flutter/team4_todolist_select.jsp');
     var response = await http.get(url);
     // print(response.body);
-    todoList.clear(); // 화면에 데이터 정리. 안하면 쌓일 수 있음.
+    todoList.clear();
     var dataConvertedJSON =
-        json.decode(utf8.decode(response.bodyBytes)); // 한국 사람은 이거 써야 됨.
+        json.decode(utf8.decode(response.bodyBytes));
     List result = dataConvertedJSON['results'];
     // print(result);
     todoList.addAll(result);
@@ -213,8 +253,7 @@ class _CalenderState extends State<Calender> {
 
   List<dynamic> getEventDataForSelectedDate(DateTime selectedDate) {
     return todoList.where((event) {
-      DateTime eventDate = DateTime.parse(event[
-          't_insertDate']); // JSON 데이터에 'date' 필드가 'yyyy-MM-dd' 형식으로 있다고 가정합니다.
+      DateTime eventDate = DateTime.parse(event['t_insertDate']);
       return eventDate.year == selectedDate.year &&
           eventDate.month == selectedDate.month &&
           eventDate.day == selectedDate.day;
@@ -236,16 +275,17 @@ class _CalenderState extends State<Calender> {
   deleteTodoList(int seqNo) async {
     var url = Uri.parse('http://localhost:8080/Flutter/team4_todolist_delete.jsp?t_no=${seqNo}');
     var response = await http.get(url);
-    var dataConvertedJSON = json.decode(utf8.decode(response.bodyBytes)); // 한국 사람은 이거 써야 됨.
+    var dataConvertedJSON = json.decode(utf8.decode(response.bodyBytes));
     String result = dataConvertedJSON['result'];
     if(result == "OK") {
       Get.snackbar(
         '일정 삭제',
         '삭제가 완료 되었습니다.',
         icon: const Icon(
-          Icons.access_alarm,
+          Icons.delete_forever,
+          color: Colors.red,
         ),
-        backgroundColor: Colors.green,
+        // backgroundColor: Colors.green,
       );
     } else {
       Get.snackbar(
@@ -253,10 +293,12 @@ class _CalenderState extends State<Calender> {
         '삭제가 중 문제가 발생했습니다.',
         icon: const Icon(
           Icons.warning,
+          color: Colors.red,
         ),
-        backgroundColor: Colors.red,
+        // backgroundColor: Colors.red,
       );
     }
+    getTodoList();
   } // 
 
 
