@@ -44,7 +44,7 @@ class MemoDetailWidget extends StatelessWidget {
                                   // readOnly: true,
                                   maxLines: null,
                                   minLines: 16,
-                                  keyboardType: TextInputType.text,
+                                  // keyboardType: TextInputType.text,
                                   decoration: InputDecoration(
                                     labelText: 'Memo',
                                     filled: true,
