@@ -92,7 +92,7 @@ class MemoDetailPage extends StatelessWidget {
                     ),
                     onTap: () {
                       memoProvider.updateColor(entry.key);
-                      print(memoProvider.memoData.memoLabelColor);
+                      // print(memoProvider.memoData.memoLabelColor);
                       Get.back();
                     },
                   ),
