@@ -61,7 +61,8 @@ class MemoMainWidget extends StatelessWidget {
             onConfirm: () {
               FirebaseFirestore.instance.collection('memo').doc(doc.id).delete();
               Get.back();
-              Get.snackbar('메모', '메모가 삭제 되었습니다.', snackPosition: SnackPosition.BOTTOM, backgroundColor: Color(LabelColors.colorLabels[memoProvider.memoData.memoLabelColor]));
+              // print(memoProvider.memoData.memoLabelColor);
+              Get.snackbar('메모', '메모가 삭제 되었습니다.', snackPosition: SnackPosition.BOTTOM, backgroundColor: Color(LabelColors.colorLabels[memoData.memoLabelColor]));
             },
           );
         }
