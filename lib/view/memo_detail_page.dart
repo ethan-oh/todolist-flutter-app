@@ -23,8 +23,8 @@ class MemoDetailPage extends StatelessWidget {
           ),
           IconButton(
             onPressed: () {
-              print(_memoProvider.memoData.contentText);
-              print(_memoProvider.memoData.memoLabelColor);
+              // print(_memoProvider.memoData.contentText);
+              // print(_memoProvider.memoData.memoLabelColor);
               FirebaseFirestore.instance.collection('memo').doc(_memoProvider.id).update({'content' : _memoProvider.memoData.contentText, 'labelcolor' : _memoProvider.memoData.memoLabelColor});
 
               Get.back();
