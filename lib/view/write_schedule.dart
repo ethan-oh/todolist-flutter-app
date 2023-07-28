@@ -170,7 +170,7 @@ class _WriteScheduleState extends State<WriteSchedule> {
       _showErrorDialog('모든 필드를 입력해주세요.');
     } else {
       var url = Uri.parse(
-          'http://192.168.10.75:8080/Flutter/team4_todolist_insert.jsp?t_title=${titleController.text}&t_content=${contentController.text}&t_important=${important}&t_startDate=${startDateTime.toString().substring(0, 18)}&t_endDate=${endDateTime.toString().substring(0, 18)}');
+          'http://localhost:8080/Flutter/team4_todolist_insert.jsp?t_title=${titleController.text}&t_content=${contentController.text}&t_important=${important}&t_startDate=${startDateTime.toString().substring(0, 18)}&t_endDate=${endDateTime.toString().substring(0, 18)}');
       var response = await http.get(url);
       var dataConvertedJSON =
           json.decode(utf8.decode(response.bodyBytes)); // 한국 사람은 이거 써야 됨.
